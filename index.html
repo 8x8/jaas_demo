@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script src="https://8x8.vc/libs/external_api.min.js"></script>
+  </head>
+  <body>
+    <div id="meet" class="margin:auto; text-align:center;"></div>
+
+    <script>
+      const domain = "8x8.vc";
+      const options = {
+        roomName:
+          "replace-with-your-vpaas-magic-cookie/RoomNameHere", // replace this with $your_tenant_name/$room_name
+        width: 1100,
+        height: 1100,
+        parentNode: document.querySelector("#meet"),
+        jwt:
+          "USERS_JWT_GOES_HERE",
+      };
+      const api = new JitsiMeetExternalAPI(domain, options);
+      // Example of a command to manipulate the jitsi video meeting, such as muting eceryone
+      // api.executeCommand('muteEveryone');
+    </script>
+  </body>
+</html>
