@@ -1,5 +1,7 @@
 # Jitsi as a Service
 
+🍿 Check out the [video demo](https://vimeo.com/492256366)
+
 Get started for free with [JaaS](https://jaas.8x8.vc).
 
 Here's a bit of sample code to help you get started using JaaS.
