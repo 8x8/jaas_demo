@@ -1,0 +1,18 @@
+{
+  "name": "jaas-jwt",
+  "version": "1.0.0",
+  "description": "Sample code that helps generate JaaS JWT",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "JaaS"
+  ],
+  "author": "8x8",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "uuid-random": "^1.3.2"
+  }
+}
