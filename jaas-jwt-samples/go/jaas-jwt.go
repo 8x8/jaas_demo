@@ -4,18 +4,14 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"io/ioutil"
 	"strconv"
 	"time"
 
-	"github.com/lestrrat-go/jwx/jwa"
-
-	"github.com/lestrrat-go/jwx/jwk"
-
 	"github.com/google/uuid"
-	"github.com/lestrrat-go/jwx/jws"
-	"github.com/lestrrat-go/jwx/jwt"
+	"github.com/pascaldekloe/jwt"
 )
 
 // JWT helper constants
@@ -32,10 +28,10 @@ const (
 // JaaSJwtBuilder helps with the generation of the JWT token for JaaS.
 // Below you will find an example how to use it.
 type JaaSJwtBuilder struct {
-	userClaims    map[string]string
-	featureClaims map[string]string
-	token         jwt.Token
-	tokenHeaders  jws.Headers
+	userClaims    map[string]interface{}
+	featureClaims map[string]interface{}
+	payload       map[string]interface{}
+	headers       map[string]interface{}
 }
 
 // NewJaaSJwtBuilder creates a new builder that can be used to generate a JWT.
@@ -43,42 +39,21 @@ type JaaSJwtBuilder struct {
 func NewJaaSJwtBuilder(params ...func(*JaaSJwtBuilder) error) (*JaaSJwtBuilder, error) {
 
 	jaaSJwtBuilder := JaaSJwtBuilder{
-		userClaims:    map[string]string{},
-		featureClaims: map[string]string{},
-		token:         jwt.New(),
-		tokenHeaders:  jws.NewHeaders(),
+		featureClaims: map[string]interface{}{},
+		userClaims:    map[string]interface{}{},
+		payload: map[string]interface{}{
+			"aud": "jitsi",
+			"iss": "chat",
+		},
+		headers: map[string]interface{}{
+			"typ": "JWT",
+		},
 	}
 
-	err := jaaSJwtBuilder.tokenHeaders.Set(jws.AlgorithmKey, "RS256")
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = jaaSJwtBuilder.tokenHeaders.Set(jws.TypeKey, "jwt")
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = jaaSJwtBuilder.token.Set(jwt.IssuerKey, "chat")
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = jaaSJwtBuilder.token.Set(jwt.AudienceKey, "jitsi")
-
-	if err != nil {
-		return nil, err
-	}
-
-	if err == nil {
-		for _, param := range params {
-			err := param(&jaaSJwtBuilder)
-			if err != nil {
-				return nil, err
-			}
+	for _, param := range params {
+		err := param(&jaaSJwtBuilder)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -87,15 +62,24 @@ func NewJaaSJwtBuilder(params ...func(*JaaSJwtBuilder) error) (*JaaSJwtBuilder, 
 
 // SignWith should be used after all the needed claims have been set.
 // Returns a signed token string or "" on error.
-func (jjb *JaaSJwtBuilder) SignWith(privateKey jwk.RSAPrivateKey) (string, error) {
+func (jjb *JaaSJwtBuilder) SignWith(privateKey *rsa.PrivateKey) (string, error) {
 
-	context := map[string]map[string]string{
+	jjb.payload["context"] = map[string]interface{}{
 		"user":     jjb.userClaims,
-		"features": jjb.featureClaims}
+		"features": jjb.featureClaims,
+	}
 
-	jjb.token.Set("context", context)
+	payloadClaims := jwt.Claims{
+		Set: jjb.payload,
+	}
 
-	signedToken, err := jwt.Sign(jjb.token, jwa.RS256, privateKey, jwt.WithHeaders(jjb.tokenHeaders))
+	extraHeaders, err := json.Marshal(jjb.headers)
+
+	if err != nil {
+		return "", err
+	}
+
+	signedToken, err := payloadClaims.RSASign(jwt.RS256, privateKey, extraHeaders)
 
 	if err != nil {
 		return "", err
@@ -139,7 +123,8 @@ func WithDefaults() func(*JaaSJwtBuilder) error {
 // You can get an API Key from https://jaas.8x8.vc/#/apikeys.
 func WithAPIKey(apiKey string) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		return jjb.tokenHeaders.Set(jws.KeyIDKey, apiKey)
+		jjb.headers["kid"] = apiKey
+		return nil
 	}
 }
 
@@ -211,35 +196,39 @@ func WithRecordingEnabled(isEnabled bool) func(*JaaSJwtBuilder) error {
 // You shouldn't have to change this too much.
 func WithExpTime(expTime int64) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		return jjb.token.Set(jwt.ExpirationKey, expTime)
+		jjb.payload["exp"] = expTime
+		return nil
 	}
 }
 
 // WithNbf sets the value for the nbf claim, unix time. You shouldn't have to change this too much.
 func WithNbf(nbf int64) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		return jjb.token.Set(jwt.NotBeforeKey, nbf)
+		jjb.payload["nbf"] = nbf
+		return nil
 	}
 }
 
 // WithRoomName sets the value for the room claim.
 func WithRoomName(roomName string) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		return jjb.token.Set(RoomKey, roomName)
+		jjb.payload["room"] = roomName
+		return nil
 	}
 }
 
 // WithTenantName sets the value for the sub claim, representing the unique tenant identifier.
 func WithTenantName(tenantName string) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		return jjb.token.Set(jwt.SubjectKey, tenantName)
+		jjb.payload["sub"] = tenantName
+		return nil
 	}
 }
 
 // WithUserID sets the value for the id claim, identifying the user.
 func WithUserID(userID string) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		jjb.userClaims[UserIDKey] = userID
+		jjb.userClaims["id"] = userID
 		return nil
 	}
 }
@@ -261,7 +250,7 @@ func readRsaPrivateKey() (*rsa.PrivateKey, error) {
 	var privPemBytes []byte
 	privPemBytes = privPem.Bytes
 	var parsedKey interface{}
-	parsedKey, err = x509.ParsePKCS8PrivateKey(privPemBytes)
+	parsedKey, err = x509.ParsePKCS8PrivateKey(privPemBytes) // Check errors
 	var privateKey *rsa.PrivateKey
 	privateKey, _ = parsedKey.(*rsa.PrivateKey)
 	return privateKey, nil
@@ -273,22 +262,19 @@ func main() {
 	builder, err := NewJaaSJwtBuilder(
 		WithDefaults(),
 		WithAPIKey("my api key"),
-		WithUserName("my user name"),
-		WithUserEmail("my email address"),
+		WithUserName("someone"),
+		WithUserEmail("myemail@email.com"),
 		WithModerator(true),
 		WithTenantName("my tenant name"),
 		WithUserAvatar("https://asda.com/avatar"),
 	)
 
 	if err == nil {
-		// You have to read the generated private key from a file. See https://jaas.8x8.vc/#/apikeys.
-		// For this example we generate a new one.
-		k, _ := generateRsaKey()
-		key := jwk.NewRSAPrivateKey()
-		key.FromRaw(k)
+		// You can read the generated private key from a file. See https://jaas.8x8.vc/#/apikeys.
+		pk, _ := readRsaPrivateKey()
 
 		// Signs the JWT.
-		signedToken, _ := builder.SignWith(key)
+		signedToken, _ := builder.SignWith(pk)
 
 		// Writes the signed jwt to standard output.
 		println(signedToken)
