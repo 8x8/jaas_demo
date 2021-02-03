@@ -12,12 +12,12 @@ USER_NAME="my user name" # Sets the user name
 USER_EMAIL="my user email" # Sets the user email
 USER_AVATAR_URL="my avatar url" # Sets the users avatar url
 USER_ID="my user id" # Set a unique id for the user, corresponding to your backend
-USER_IS_MODERATOR=false # Sets the user as moderator
+USER_IS_MODERATOR=true # Sets the user as moderator
 RECORDING_ENABLED=false # Sets recording feature enabled
 LIVESTREAMING_ENABLED=false # Sets live steraming feature enabled
 OUTBOUND_CALL_ENABLED=false # Sets outbound call feature enabled
 TRANSCRIPTION_ENABLED=false # Sets transcription feature enabled
-ROOM_NAME="my room name or *" # Sets the room name
+ROOM_NAME="*" # Sets the room name
 timeNow=`date +%s` # Sets to current local time
 expTimeDelay=7200 # No real need to modify this
 nbfTimeDelay=10 # No real need to modify this
@@ -69,7 +69,7 @@ encodeBase64() {
 # $2 jwt payload including header
 #################
 signWithKey() {
-    echo -n "$2" | openssl dgst -sha256 -binary -sign "$1"  | openssl enc -base64 | tr -d '\n=' | tr -- '+/' '-_'
+    echo -n "$2" | openssl dgst -sha256 -binary -sign "$1"  | openssl enc -base64 | tr -d '\n=[:space:]' | tr -- '+/' '-_'
 }
 
 ################
