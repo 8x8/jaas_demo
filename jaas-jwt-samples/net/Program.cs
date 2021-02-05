@@ -9,9 +9,9 @@ namespace jaas_jwt
 {
     class Program
     {
-        /** Placeholder helper string. */
+        /// Placeholder helper string.
         public const String BEGIN_RSA_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----";
-        /** Placeholder helper string. */
+        /// Placeholder helper string.
         public const String END_RSA_PRIVATE_KEY = "-----END RSA PRIVATE KEY-----";
 
         /// <summary>
@@ -318,10 +318,10 @@ namespace jaas_jwt
         {
             try
             {
-                /** Read private key from file. */
+                /// Read private key from file.
                 var rsaPrivateKey = ReadPrivateKeyFromFile("./rsa-private.pem");
 
-                /** Create new JaaSJwtBuilder and setup the claims. */
+                /// Create new JaaSJwtBuilder and setup the claims and sign using the private key.
                 var token = JaaSJwtBuilder.Builder()
                                     .WithDefaults()
                                     .WithApiKey("my api key")
@@ -331,7 +331,7 @@ namespace jaas_jwt
                                     .WithTenantName("my tenant name")
                                     .SignWith(rsaPrivateKey);
 
-                /** Write JaaS JWT to standard output. */
+                /// Write JaaS JWT to standard output.
                 Console.Write(token);
             }
             catch(Exception ex)
