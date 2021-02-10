@@ -39,7 +39,7 @@ Using JaaSJwtBuilder you can generate a new JWT like in the following example :
 		WithUserName("my user name"), // Set the user name
 		WithUserEmail("my email address"), // Set the user email
 		WithModerator(true), // Set the moderator
-		WithTenantName("my tenant name"), // Set the tenant name / tenant unique identifier
+		WithAppID("my app id"), // Set the AppID
 		WithUserAvatar("https://exampleurl.com/avatar"), // Set the avatar url
 	)
 

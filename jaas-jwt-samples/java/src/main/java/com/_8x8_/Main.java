@@ -25,7 +25,7 @@ public class Main {
      * Use the following command to convert the generated private key to PKCS #8 :
      * openssl pkcs8 -topk8 -inform PEM -in <input key path> -outform pem -nocrypt -out <output key path>
      * */
-    private static final String PRIVATE_KEY_FILE_RSA = "src/test/resources/jaas-key.pem";
+    private static final String PRIVATE_KEY_FILE_RSA = "src/test/resources/jaas-key.pk";
 
     /** Placeholder helper string. */
     public static final String BEGIN_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----";
@@ -197,12 +197,12 @@ public class Main {
         }
 
         /**
-         * Sets the value for the sub claim representing the tenant name/unique identifier.
-         * @param tenantName The tenant unique identifier.
+         * Sets the value for the sub claim representing the AppID (previously tenant name/unique identifier).
+         * @param appId The AppID that identifies your application.
          * @return Returns a new builder with sub claim set.
          */
-        public JaaSJwtBuilder withTenantName(String tenantName) {
-            jwtBuilder.withClaim("sub", tenantName);
+        public JaaSJwtBuilder withAppID(String appId) {
+            jwtBuilder.withClaim("sub", appId);
             return this;
         }
 
@@ -212,7 +212,7 @@ public class Main {
          * @return Returns a new builder with kid claim set.
          */
         public JaaSJwtBuilder withUserId(String userId) {
-            jwtBuilder.withClaim("id", userId);
+            userClaims.put("id", userId);
             return this;
         }
 
@@ -271,22 +271,22 @@ public class Main {
         try
         {
             /** Read private key from file. */
-            RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) getPemPrivateKey(PRIVATE_KEY_FILE_RSA);
+            RSAPrivateKey rsaPrivateKey = getPemPrivateKey(PRIVATE_KEY_FILE_RSA);
 
             /** Create new JaaSJwtBuilder and setup the claims. */
             String token = JaaSJwtBuilder.builder()
                     .withDefaults() // This sets default/most common values
-                    .withApiKey("My api key here") // Set the api key
+                    .withApiKey("my api key") // Set the api key
                     .withUserName("My name here") // Set the user name
                     .withUserEmail("My email here") // Set the user email
                     .withModerator(true) // Enable user as moderator
                     .withOutboundEnabled(true) // Enable outbound calls
                     .withTranscriptionEnabled(true) // Enable transcription
-                    .withTenantName("My tenant name here") // Set the tenant name
+                    .withAppID("my AppID") // Set the AppID
                     .withUserAvatar("https://avatarurl.com/avatar/url") // Set the user avatar
                     .signWith(rsaPrivateKey); /** Finally the JWT is signed with the private key */
 
-            System.out.println("JaaSToken : " + token);
+            System.out.println(token);
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
