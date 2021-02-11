@@ -26,9 +26,11 @@ class JaaSJwtBuilder:
             .withNbfTime(int(time.time() - JaaSJwtBuilder.NBF_TIME_DELAY_SEC)) \
                 .withLiveStreamingEnabled(True) \
                     .withRecordingEnabled(True) \
-                        .withModerator(True) \
-                            .withRoomName('*') \
-                                .withUserId(str(uuid.uuid4()))
+                        .withOutboundCallEnabled(True) \
+                            .withTranscriptionEnabled(True) \
+                                .withModerator(True) \
+                                    .withRoomName('*') \
+                                        .withUserId(str(uuid.uuid4()))
 
     def withApiKey(self, apiKey):
         """
@@ -93,6 +95,24 @@ class JaaSJwtBuilder:
         self.featureClaims['recording'] = 'true' if isEnabled == True else 'false'
         return self
 
+    def withTranscriptionEnabled(self, isEnabled):
+        """
+        Returns the JaaSJwtBuilder with the transcription claim set.
+
+        :param isEnabled A boolean if set to True, transcription is enabled and False otherwise.
+        """
+        self.featureClaims['transcription'] = 'true' if isEnabled == True else 'false'
+        return self
+
+    def withOutboundCallEnabled(self, isEnabled):
+        """
+        Returns the JaaSJwtBuilder with the outbound-call claim set.
+
+        :param isEnabled A boolean if set to True, outbound calls are enabled and False otherwise.
+        """
+        self.featureClaims['outbound-call'] = 'true' if isEnabled == True else 'false'
+        return self
+
     def withExpTime(self, expTime):
         """
         Returns the JaaSJwtBuilder with exp claim set. Use the defaults, you won't have to change this value too much.
@@ -120,13 +140,13 @@ class JaaSJwtBuilder:
         self.payloadClaims['room'] = roomName
         return self
 
-    def withTenantName(self, tenantName):
+    def withAppID(self, AppId):
         """
-        Returns the JaaSJwtBuilder with the tenant claim set.
+        Returns the JaaSJwtBuilder with the sub claim set.
 
-        :param tenantName A string representing the unique tenant identifier.
+        :param AppId A string representing the unique AppID (previously tenant).
         """
-        self.payloadClaims['sub'] = tenantName
+        self.payloadClaims['sub'] = AppId
         return self
 
     def withUserId(self, userId):
@@ -135,7 +155,7 @@ class JaaSJwtBuilder:
 
         :param A string representing the user, should be unique from your side.
         """
-        self.payloadClaims['id'] = userId
+        self.userClaims['id'] = userId
         return self
 
     def signWith(self, key):
@@ -160,11 +180,11 @@ def main(argv):
             jaasJwt = JaaSJwtBuilder()
 
             token = jaasJwt.withDefaults() \
-                .withApiKey("vpaas-magic-cookie-931ab79243e94c7da66e4bded55c2fb6/8c003f") \
+                .withApiKey("my api key") \
                     .withUserName("my user name") \
                         .withUserEmail("myemail@email.com") \
                             .withModerator(True) \
-                                .withTenantName("vpaas-magic-cookie-931ab79243e94c7da66e4bded55c2fb6") \
+                                .withAppID("my AppID") \
                                     .withUserAvatar("https://asda.com/avatar") \
                                         .signWith(reader.read())
 

@@ -18,7 +18,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
  * Change the variables below.
  */
 $API_KEY="my api key";
-$TENANT_NAME="my tenant name";
+$APP_ID="my AppID"; // Your AppID (previously tenant)
 $USER_EMAIL="myemail@email.com";
 $USER_NAME="my user name";
 $USER_IS_MODERATOR=true;
@@ -64,7 +64,7 @@ $payload = json_encode([
     'exp' => time() + $EXP_DELAY_SEC,
     'nbf' => time() - $NBF_DELAY_SEC,
     'room'=> '*',
-    'sub' => $TENANT_NAME,
+    'sub' => $APP_ID,
     'context' => [
         'user' => [
             'moderator' => $USER_IS_MODERATOR ? "true" : "false",

@@ -29,7 +29,7 @@ dotnet add package System.IdentityModel.Tokens.Jwt --version 6.8.0
                     .WithUserName("my user name")
                     .WithUserEmail("my user email")
                     .WithUserAvatar("https://avatarurl.com/avatar/url")
-                    .WithTenantName("my tenant name")
+                    .WithAppID("my app id")
                     .SignWith(rsaPrivateKey);
 
     /** Write JaaS JWT to standard output. */

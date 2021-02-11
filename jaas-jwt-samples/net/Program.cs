@@ -230,13 +230,13 @@ namespace jaas_jwt
             }
 
             /// <summary>
-            /// Sets the value for the sub claim representing the tenant name/unique identifier.
+            /// Sets the value for the sub claim representing the AppID ( previously tenant name/unique identifier).
             /// </summary>
-            /// <param name="tenantName">The tenant unique identifier.</param>
+            /// <param name="appId">The AppID that identifies your application.</param>
             /// <returns></returns>
-            public JaaSJwtBuilder WithTenantName(String tenantName)
+            public JaaSJwtBuilder WithAppID(String appId)
             {
-                payload.Add("sub", tenantName);
+                payload.Add("sub", appId);
                 return this;
             }
 
@@ -299,7 +299,8 @@ namespace jaas_jwt
         }
 
         /// <summary>
-        /// Reads a RSA private key from file.
+        /// Reads a RSA private key PCKS#1 format from file.
+        /// Use openssl rsa -in inputfile -out outputfile to convert to PKCS#1 if you need to.
         /// </summary>
         /// <param name="privateKeyFilePath"></param>
         /// <returns></returns>
@@ -319,7 +320,7 @@ namespace jaas_jwt
             try
             {
                 /// Read private key from file.
-                var rsaPrivateKey = ReadPrivateKeyFromFile("./rsa-private.pem");
+                var rsaPrivateKey = ReadPrivateKeyFromFile("./rsa-private.pk");
 
                 /// Create new JaaSJwtBuilder and setup the claims and sign using the private key.
                 var token = JaaSJwtBuilder.Builder()
@@ -328,7 +329,7 @@ namespace jaas_jwt
                                     .WithUserName("my user name")
                                     .WithUserEmail("my user email")
                                     .WithUserAvatar("https://avatarurl.com/avatar/url")
-                                    .WithTenantName("my tenant name")
+                                    .WithAppID("my AppID")
                                     .SignWith(rsaPrivateKey);
 
                 /// Write JaaS JWT to standard output.
