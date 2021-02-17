@@ -72,7 +72,7 @@ Using the JaaSJwtBuilder class you can generate a new JWT.
             .withModerator(true) // Enable user as moderator
             .withOutboundEnabled(true) // Enable outbound calls
             .withTranscriptionEnabled(true) // Enable transcription
-            .withTenantName("My tenant name here") // Set the tenant name
+            .withAppID("My AppID here") // Set the AppID
             .withUserAvatar("https://avatarurl.com/avatar/url") // Set the user avatar
             .signWith(rsaPrivateKey); /** Finally the JWT is signed with the private key */
 

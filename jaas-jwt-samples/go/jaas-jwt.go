@@ -217,10 +217,10 @@ func WithRoomName(roomName string) func(*JaaSJwtBuilder) error {
 	}
 }
 
-// WithTenantName sets the value for the sub claim, representing the unique tenant identifier.
-func WithTenantName(tenantName string) func(*JaaSJwtBuilder) error {
+// WithAppID sets the value for the sub claim, representing the AppID (previously unique tenant identifier).
+func WithAppID(appID string) func(*JaaSJwtBuilder) error {
 	return func(jjb *JaaSJwtBuilder) error {
-		jjb.payload["sub"] = tenantName
+		jjb.payload["sub"] = appID
 		return nil
 	}
 }
@@ -240,7 +240,7 @@ func generateRsaKey() (*rsa.PrivateKey, error) {
 
 // Reads a private key from a file.
 func readRsaPrivateKey() (*rsa.PrivateKey, error) {
-	priv, err := ioutil.ReadFile("./rsa-private.pem")
+	priv, err := ioutil.ReadFile("./rsa-private.pk")
 
 	if err != nil {
 		return nil, nil
@@ -265,7 +265,7 @@ func main() {
 		WithUserName("someone"),
 		WithUserEmail("myemail@email.com"),
 		WithModerator(true),
-		WithTenantName("my tenant name"),
+		WithAppID("my AppID"),
 		WithUserAvatar("https://asda.com/avatar"),
 	)
 

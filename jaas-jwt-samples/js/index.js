@@ -4,7 +4,7 @@ var uuid = require('uuid-random');
 /**
  * Function generates a JaaS JWT.
  */
-const generate = (privateKey, { id, name, email, avatar, tenant, kid }) => {
+const generate = (privateKey, { id, name, email, avatar, appId, kid }) => {
   const now = new Date()
   const jwt = jsonwebtoken.sign({
     aud: 'jitsi',
@@ -25,7 +25,7 @@ const generate = (privateKey, { id, name, email, avatar, tenant, kid }) => {
     },
     iss: 'chat',
     room: '*',
-    sub: tenant,
+    sub: appId,
     exp: Math.round(now.setHours(now.getHours() + 3) / 1000),
     nbf: (Math.round((new Date).getTime() / 1000) - 10)
   }, privateKey, { algorithm: 'RS256', header: { kid } })
@@ -40,7 +40,7 @@ const token = generate('my private key', {
     name: "my user name",
     email: "my user email",
     avatar: "my avatar url",
-    tenant: "my tenant name",
+    appId: "my AppID", // Your AppID ( previously tenant )
     kid: "my api key"
 });
 

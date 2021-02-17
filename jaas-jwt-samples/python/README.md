@@ -32,7 +32,7 @@ Using JaaSJwtBuilder you can generate a new JWT like in the following example :
             .withUserName("my user name") \
                 .withUserEmail("my email address") \
                     .withModerator(True) \
-                        .withTenantName("my tenant name") \
+                        .withAppID("my app id") \
                             .withUserAvatar("https://asda.com/avatar") \
                                 .signWith("my private key") # Pass the private here
 

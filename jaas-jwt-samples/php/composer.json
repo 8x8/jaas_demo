@@ -1,0 +1,8 @@
+{
+    "require": {
+        "web-token/jwt-key-mgmt": "^2.2",
+        "web-token/jwt-signature": "^2.2",
+        "web-token/jwt-signature-algorithm-rsa": "^2.2",
+        "firebase/php-jwt": "^5.2"
+    }
+}

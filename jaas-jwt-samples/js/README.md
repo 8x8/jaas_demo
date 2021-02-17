@@ -36,7 +36,7 @@ const token = generate('my private key', { // Pass your generated private key
     name: "my user name", // Set the user name
     email: "my user email", // Set the user email
     avatar: "my avatar url", // Set the user avatar
-    tenant: "my tenant name", // Set the tenant name / tenant unique idenfier
+    appId: "my app id", // Your AppID
     kid: "my api key" // Set the api key, see https://jaas.8x8.vc/#/apikeys for more info.
 });
 
