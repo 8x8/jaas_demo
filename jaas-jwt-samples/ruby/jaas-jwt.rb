@@ -3,6 +3,7 @@ require "jwt"
 
 API_KEY="my api key" # See https://jaas.8x8.vc/#/apikeys for more info.
 APP_ID="my AppID" # Sets the AppID / tenant
+PRIVATE_KEY_FILE = "path/to/private_key.pk" # Remote file is also OK, but please concern about sercurity issues.
 USER_NAME="my user name" # Sets the user name
 USER_EMAIL="my user email" # Sets the user email
 USER_AVATAR_URL="my avatar url" # Sets the users avatar url
@@ -42,5 +43,5 @@ PAYLOAD = {
   }
 }
 
-private_key = OpenSSL::PKey::RSA.new File.read("/path/to/your_private_key.pk")
+private_key = OpenSSL::PKey::RSA.new open(PRIVATE_KEY_FILE).read
 jwt = JWT.encode PAYLOAD, private_key, "RS256", {"typ": "JWT", "kid": API_KEY}

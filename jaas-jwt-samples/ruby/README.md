@@ -35,6 +35,7 @@ In order to generate a custom JWT you must modify the variables from below in ja
 # Change the variables bellow
 API_KEY="my api key" # See https://jaas.8x8.vc/#/apikeys for more info.
 APP_ID="my AppID" # Sets the AppID / tenant
+PRIVATE_KEY_FILE = "path/to/private_key.pk" # Remote file is also OK, but please concern about sercurity issues.
 USER_NAME="my user name" # Sets the user name
 USER_EMAIL="my user email" # Sets the user email
 USER_AVATAR_URL="my avatar url" # Sets the users avatar url
