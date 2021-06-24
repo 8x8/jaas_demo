@@ -209,7 +209,7 @@ namespace jaas_jwt
             /// </returns>
             public JaaSJwtBuilder WithNbfTime(DateTime nbfTime)
             {
-                payload.Add("nbf", new DateTimeOffset(nbfTime).ToUnixTimeSeconds());
+                payload.Add("nbfTime", new DateTimeOffset(nbfTime).ToUnixTimeSeconds());
                 return this;
             }
 
