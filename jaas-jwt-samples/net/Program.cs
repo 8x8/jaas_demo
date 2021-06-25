@@ -7,12 +7,26 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace jaas_jwt
 {
+
+    public enum PKType
+    {
+        // PKCS#1 type key
+        PKCS1,
+        // PKCS#8 type key
+        PKCS8
+    }
+
     class Program
     {
         /// Placeholder helper string.
-        public const String BEGIN_RSA_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----";
+        public const String BEGIN_PKCS1_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----";
         /// Placeholder helper string.
-        public const String END_RSA_PRIVATE_KEY = "-----END RSA PRIVATE KEY-----";
+        public const String END_PKCS1_PRIVATE_KEY = "-----END RSA PRIVATE KEY-----";
+
+        /// Placeholder helper string.
+        public const String BEGIN_PKCS8_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----";
+        /// Placeholder helper string.
+        public const String END_PKCS8_PRIVATE_KEY = "-----END PRIVATE KEY-----";
 
         /// <summary>
         /// JaaSJwtBuilder class that helps generate JaaS tokens.
@@ -299,19 +313,28 @@ namespace jaas_jwt
         }
 
         /// <summary>
-        /// Reads a RSA private key PCKS#1 format from file.
+        /// Reads a RSA private key PKCS#1 or PKCS#8 format from file.
         /// Use openssl rsa -in inputfile -out outputfile to convert to PKCS#1 if you need to.
         /// </summary>
         /// <param name="privateKeyFilePath"></param>
-        /// <returns></returns>
-        static RSA ReadPrivateKeyFromFile(String privateKeyFilePath)
+        /// <param name="pkType">The type of key from the file: PKCS#1 or PKCS#8</param>
+        /// <returns>The private key object</returns>
+        static RSA ReadPrivateKeyFromFile(String privateKeyFilePath, PKType pkType)
         {
             var rsa = RSA.Create();
             var privateKeyContent = File.ReadAllText(privateKeyFilePath, System.Text.Encoding.UTF8);
-            privateKeyContent = privateKeyContent.Replace(Program.BEGIN_RSA_PRIVATE_KEY, "");
-            privateKeyContent = privateKeyContent.Replace(Program.END_RSA_PRIVATE_KEY, "");
+            privateKeyContent = privateKeyContent.Replace(pkType == PKType.PKCS1 ? Program.BEGIN_PKCS1_PRIVATE_KEY : Program.BEGIN_PKCS8_PRIVATE_KEY, "");
+            privateKeyContent = privateKeyContent.Replace(pkType == PKType.PKCS1 ? Program.END_PKCS1_PRIVATE_KEY : Program.END_PKCS8_PRIVATE_KEY, "");
             var privateKeyDecoded = Convert.FromBase64String(privateKeyContent);
-            rsa.ImportRSAPrivateKey(privateKeyDecoded, out _);
+            if (pkType == PKType.PKCS1)
+            {
+                rsa.ImportRSAPrivateKey(privateKeyDecoded, out _);
+            }
+            else
+            {
+                rsa.ImportPkcs8PrivateKey(privateKeyDecoded, out _);
+            }
+
             return rsa;
         }
 
@@ -320,7 +343,7 @@ namespace jaas_jwt
             try
             {
                 /// Read private key from file.
-                var rsaPrivateKey = ReadPrivateKeyFromFile("./rsa-private.pk");
+                var rsaPrivateKey = ReadPrivateKeyFromFile("./rsa-private.pk", PKType.PKCS8);
 
                 /// Create new JaaSJwtBuilder and setup the claims and sign using the private key.
                 var token = JaaSJwtBuilder.Builder()
@@ -335,7 +358,7 @@ namespace jaas_jwt
                 /// Write JaaS JWT to standard output.
                 Console.Write(token);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
