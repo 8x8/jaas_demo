@@ -1,8 +1,10 @@
 # JaaS JWT
 
-This following demonstrates how to generate a JaaS JWT using PHP.
+Here you can find examples on how to generate a JaaS JWT using `firebase/php-jwt` and `web-token/jwt-framework`. But any other JWT library should do as long as you set the claims included in the two examples and use the RS256 asymmetric encryption.
 
-### Useful links
+For more libraries, please check [https://jwt.io/libraries](https://jwt.io/libraries).
+
+## Useful links
 
 [JWT (JSON Web Token)](https://tools.ietf.org/html/rfc7519)
 
@@ -10,91 +12,26 @@ This following demonstrates how to generate a JaaS JWT using PHP.
 
 [JWS (JSON Web Signature)](https://tools.ietf.org/html/rfc7515)
 
+
 ## Dependencies
 
-**System requirements : PHP 7.3+ and above**
+> **System requirements:** **PHP** `^7.1 || ^8.0` for `jaas-jwt-firebase.php` and **PHP** `^8.1` with the `BCMATH` extension for `jaas-jwt.php`
 
-To install dependencies go into your project directory and install composer using the guide from [Download Composer](https://getcomposer.org/download/)
+To install dependencies, go into your project directory and install composer using the guide from [the composer website](https://getcomposer.org/download/).
 
-After Composer is installed in your project directory run the following command:
+After Composer is installed in your project directory, run the following command to download the libraries.
 
-```
+```bash
 ./composer.phar update
 ```
 
 ## Generate JWT
 
-Change the the claim values in the payload as shown below or update the variables below line 20 in jaas-jwt.php
+Both script samples are meant to be executed from the CLI, but you can easily adapt them to be served by a webserver.
 
-```
-$payload = json_encode([
-    'iss' => 'chat',
-    'aud' => 'jitsi',
-    'exp' => time() + $EXP_DELAY_SEC,
-    'nbf' => time() - $NBF_DELAY_SEC,
-    'room'=> '*',
-    'sub' => $APP_ID,
-    'context' => [
-        'user' => [
-            'moderator' => $USER_IS_MODERATOR ? "true" : "false",
-            'email' => $USER_EMAIL,
-            'name' => $USER_NAME,
-            'avatar' => $USER_AVATAR_URL,
-            'id' => $USER_ID
-        ],
-        'features' => [
-            'recording' => $RECORDING_IS_ENABLED ? "true" : "false",
-            'livestreaming' => $LIVESTREAMING_IS_ENABLED ? "true" : "false",
-            'transcription' => $TRANSCRIPTION_IS_ENABLED ? "true" : "false",
-            'outbound-call' => $OUTBOUND_IS_ENABLED ? "true" : "false"
-        ]
-    ]
-]);
-```
+Change the variables defined at the start of the scripts with your values, edit the path or the contents of the private key and run the code.
 
-To generate the JWT change the variables as indicated in jaas-jwt.php and run it:
-
-```
+```bash
+./jaas-jwt-firebase.php
 ./jaas-jwt.php
-```
-
-## Using Firebase
-
-jaas-jwt-firebase.php uses the firebase/php-jwt library. To generate a JaaS JWT just call the create_jaas_token using the require parameters :
-
-```
-/**
- * Change the variables below.
- */
-$API_KEY="my api key";
-$APP_ID="my app id"; // Your AppID (previously tenant)
-$USER_EMAIL="myemail@email.com";
-$USER_NAME="my user name";
-$USER_IS_MODERATOR=true;
-$USER_AVATAR_URL="";
-$USER_ID="my unique user id";
-$LIVESTREAMING_IS_ENABLED=true;
-$RECORDING_IS_ENABLED=true;
-$OUTBOUND_IS_ENABLED=false;
-$TRANSCRIPTION_IS_ENABLED=false;
-$EXP_DELAY_SEC=7200;
-$NBF_DELAY_SEC=0;
-///
-
-/// ...
-
-$token = create_jaas_token($API_KEY,
-                            $APP_ID,
-                            $USER_EMAIL,
-                            $USER_NAME,
-                            $USER_IS_MODERATOR,
-                            $USER_AVATAR_URL,
-                            $USER_ID,
-                            $LIVESTREAMING_IS_ENABLED,
-                            $RECORDING_IS_ENABLED,
-                            $OUTBOUND_IS_ENABLED,
-                            $TRANSCRIPTION_IS_ENABLED,
-                            $EXP_DELAY_SEC,
-                            $NBF_DELAY_SEC,
-                            $private_key);
 ```
