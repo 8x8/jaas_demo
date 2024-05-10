@@ -31,18 +31,18 @@ require (
 
 Using JaaSJwtBuilder you can generate a new JWT like in the following example :
 
-```
-	// Create a new JaaS JWT. Set the desired values below.
-	builder, err := NewJaaSJwtBuilder(
-		WithDefaults(), // Set default values
-		WithAPIKey("my api key"), // Set the api key, see https://jaas.8x8.vc/#/apikeys for more info.
-		WithUserName("my user name"), // Set the user name
-		WithUserEmail("my email address"), // Set the user email
-		WithModerator(true), // Set the moderator
-		WithAppID("my app id"), // Set the AppID
-		WithUserAvatar("https://exampleurl.com/avatar"), // Set the avatar url
-	)
+```go
+// Create a new JaaS JWT. Set the desired values below.
+builder, err := NewJaaSJwtBuilder(
+	WithDefaults(), // Set default values
+	WithAPIKey("my api key"), // Set the api key, see https://jaas.8x8.vc/#/apikeys for more info.
+	WithUserName("my user name"), // Set the user name
+	WithUserEmail("my email address"), // Set the user email
+	WithModerator(true), // Set the moderator
+	WithAppID("my app id"), // Set the AppID
+	WithUserAvatar("https://exampleurl.com/avatar"), // Set the avatar url
+)
 
-    // Signs the JWT.
-	signedToken, _ := builder.SignWith(key)
+// Signs the JWT.
+signedToken, _ := builder.SignWith(key)
 ```
