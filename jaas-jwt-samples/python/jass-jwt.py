@@ -27,10 +27,11 @@ class JaaSJwtBuilder:
                 .withLiveStreamingEnabled(True) \
                     .withRecordingEnabled(True) \
                         .withOutboundCallEnabled(True) \
-                            .withTranscriptionEnabled(True) \
-                                .withModerator(True) \
-                                    .withRoomName('*') \
-                                        .withUserId(str(uuid.uuid4()))
+                            .withSipOutboundCallEnabled(True) \
+                                .withTranscriptionEnabled(True) \
+                                    .withModerator(True) \
+                                        .withRoomName('*') \
+                                            .withUserId(str(uuid.uuid4()))
 
     def withApiKey(self, apiKey):
         """
@@ -104,6 +105,15 @@ class JaaSJwtBuilder:
         self.featureClaims['transcription'] = 'true' if isEnabled == True else 'false'
         return self
 
+    def withSipOutboundCallEnabled(self, isEnabled):
+        """
+        Returns the JaaSJwtBuilder with the transcription claim set.
+
+        :param isEnabled A boolean if set to True, transcription is enabled and False otherwise.
+        """
+        self.featureClaims['sip-outbound-call'] = 'true' if isEnabled == True else 'false'
+        return self
+    
     def withOutboundCallEnabled(self, isEnabled):
         """
         Returns the JaaSJwtBuilder with the outbound-call claim set.
