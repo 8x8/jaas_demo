@@ -104,6 +104,15 @@ class JaaSJwtBuilder:
         self.featureClaims['transcription'] = 'true' if isEnabled == True else 'false'
         return self
 
+    def withSipOutboundCallEnabled(self, isEnabled):
+        """
+        Returns the JaaSJwtBuilder with the transcription claim set.
+
+        :param isEnabled A boolean if set to True, transcription is enabled and False otherwise.
+        """
+        self.featureClaims['sip-outbound-call'] = 'true' if isEnabled == True else 'false'
+        return self
+    
     def withOutboundCallEnabled(self, isEnabled):
         """
         Returns the JaaSJwtBuilder with the outbound-call claim set.
@@ -186,7 +195,8 @@ def main(argv):
                             .withModerator(True) \
                                 .withAppID("my AppID") \
                                     .withUserAvatar("https://asda.com/avatar") \
-                                        .signWith(reader.read())
+                                        .withSipOutboundCallEnabled(True) \
+                                            .signWith(reader.read())
 
             print(token)
 
