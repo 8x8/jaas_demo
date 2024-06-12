@@ -27,10 +27,11 @@ class JaaSJwtBuilder:
                 .withLiveStreamingEnabled(True) \
                     .withRecordingEnabled(True) \
                         .withOutboundCallEnabled(True) \
-                            .withTranscriptionEnabled(True) \
-                                .withModerator(True) \
-                                    .withRoomName('*') \
-                                        .withUserId(str(uuid.uuid4()))
+                            .withSipOutboundCallEnabled(True) \
+                                .withTranscriptionEnabled(True) \
+                                    .withModerator(True) \
+                                        .withRoomName('*') \
+                                            .withUserId(str(uuid.uuid4()))
 
     def withApiKey(self, apiKey):
         """
@@ -195,8 +196,7 @@ def main(argv):
                             .withModerator(True) \
                                 .withAppID("my AppID") \
                                     .withUserAvatar("https://asda.com/avatar") \
-                                        .withSipOutboundCallEnabled(True) \
-                                            .signWith(reader.read())
+                                        .signWith(reader.read())
 
             print(token)
 
