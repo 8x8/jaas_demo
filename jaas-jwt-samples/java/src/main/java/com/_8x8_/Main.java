@@ -5,11 +5,11 @@ import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.Algorithm;
-import sun.misc.BASE64Decoder;
 
 import java.security.interfaces.*;
 import java.util.UUID;
@@ -259,8 +259,7 @@ public class Main {
     public static RSAPrivateKey getPemPrivateKey(String filename) throws Exception {
         String pem = new String(Files.readAllBytes(Paths.get(filename)));
         String privKey = pem.replace(BEGIN_PRIVATE_KEY, EMPTY).replace(END_PRIVATE_KEY, EMPTY);
-        BASE64Decoder b64=new BASE64Decoder();
-        byte[] decoded = b64.decodeBuffer(privKey);
+        byte[] decoded = Base64.getDecoder().decode(privKey);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
         KeyFactory kf = KeyFactory.getInstance(RSA);
