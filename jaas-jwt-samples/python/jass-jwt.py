@@ -138,7 +138,7 @@ class JaaSJwtBuilder:
 
         :param nbfTime Unix time in seconds since epochs.
         """
-        self.payloadClaims['nbfTime'] = nbfTime
+        self.payloadClaims['nbf'] = nbfTime
         return self
 
     def withRoomName(self, roomName):
