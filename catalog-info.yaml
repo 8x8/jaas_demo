@@ -1,0 +1,62 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: jaas_demo
+  title: TODO - Add a service title
+  description: TODO - Add a description for this component
+  tags:
+    - TODO add tags
+  annotations:
+    backstage.io/kubernetes-id: TODO
+    backstage.io/kubernetes-namespace: TODO
+    github.com/project-slug: 8x8/jaas_demo
+    pagerduty.com/service-id: TODO
+    sonarqube.org/project-key: com._8x8:TODO
+    grafana/dashboard-selector: TODO
+    grafana/alert-label-selector: 'component=TODO'
+  links:
+    - url: https://github.com/8x8/jaas_demo/actions
+      title: Github Actions Build
+      type: build
+      icon: dashboard
+    - url: TODO
+      title: Cloud8 Config
+      type: config
+      icon: github
+    - url: TODO
+      title: GDS deploy tool | GoCD pipeline
+      type: build
+      icon: catalog
+    - url: TODO
+      title: Sonar Project
+      type: dashboard
+      icon: dashboard
+    - url: TODO
+      title: Wiki
+      type: documentation
+      icon: docs
+    - url: TODO
+      title: Grafana
+      type: metrics
+      icon: dashboard
+    - url: TODO
+      title: Logs
+      type: logs
+      icon: dashboard
+spec:
+  type: service  # Options: service, library, website, etc.
+  lifecycle: non-production | production # TODO Options: experimental, production, deprecated
+  owner: TODO team name
+  system: TODO system name  # Replace with your system name
+  # dependsOn:
+  #   - component:default/other-component
+  # providesApis:
+  #   - api-name
+# ---
+# kind: Resource
+# metadata:
+#     name: TODO - database/service name
+#     description: TODO - resource description
+# spec:
+#     type: TODO database/kafka
+#     owner: TODO team name
