@@ -1,5 +1,6 @@
 {
-  "name": "jaas-jwt",
+  "name": "@8x8/jaas-jwt-sample",
+  "private": true,
   "version": "1.0.0",
   "description": "Sample code that helps generate JaaS JWT",
   "main": "src/index.js",
